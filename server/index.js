@@ -7,6 +7,9 @@ dotenv.config();
 
 const app = express();
 
+const Stripe = require("stripe");
+const stripe = Stripe(process.env.STRIPE_TOKEN);
+
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
@@ -65,7 +68,7 @@ app.post("/link/exchange", async (req, res) => {
       public_token: req.body?.public_token,
     });
     // commit response to db
-    const dbUser = getUser(user.id);
+    const dbUser = await getUser(user.id);
     console.log({ dbUser });
 
     if (!dbUser)
@@ -88,6 +91,35 @@ app.post("/link/exchange", async (req, res) => {
   } catch (error) {
     res.send({ error: error, message: error.message });
   }
+});
+
+app.post("/cards/create", async (req, res) => {
+  const user = users[req.body?.userId ?? 0];
+  const dbUser = await getUser(user.id);
+
+  const card = await stripe.issuing.cards.create({
+    cardholder: dbUser.cardholder_id,
+    currency: "usd",
+    type: "virtual",
+  });
+
+  await pool.query("INSERT INTO cards (cardholder, card) VALUES ($1, $2)", [
+    dbUser.id,
+    card.id,
+  ]);
+
+  res.send({ success: true });
+});
+
+app.get("/cards/transactions", async (req, res) => {
+  const user = users[req.body?.userId ?? 0];
+  const dbUser = await getUser(user.id);
+
+  const transactions = await stripe.issuing.transactions.list({
+    cardholder: dbUser.cardholder_id,
+  });
+
+  res.send({ success: true, data: transactions.data });
 });
 
 app.listen(8000, () => console.log("🚀 listening on :8000"));

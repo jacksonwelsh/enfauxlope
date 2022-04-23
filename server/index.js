@@ -1,7 +1,13 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const db = require("./db");
-const { getUser, pool } = db;
+const {
+  getUser,
+  pool,
+  getAggregatedTransactionsForMonth,
+  getLimitForCategory,
+} = db;
 
 dotenv.config();
 
@@ -11,6 +17,7 @@ const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_TOKEN);
 
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
+
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
@@ -111,6 +118,36 @@ app.post("/cards/create", async (req, res) => {
   res.send({ success: true });
 });
 
+app.post("/cards/override/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log({ id });
+  if (!id) return res.status(400).send();
+
+  const transaction = await pool
+    .query("select * from transactions where id = $1", [id])
+    .then((res) => res.rows[0]);
+
+  if (!transaction) return res.status(400).send();
+  if (transaction.approved)
+    return res
+      .status(400)
+      .send({
+        success: false,
+        message: `Transaction ${id} was already approved.`,
+      });
+
+  const until = new Date(new Date().getTime() + 1000 * 60 * 60 * 6);
+  await pool.query(
+    "update transactions set override_until = $1 where id = $2",
+    [until, id],
+  );
+
+  res.send({
+    success: true,
+    until: until.toISOString(),
+  });
+});
+
 app.get("/cards/transactions", async (req, res) => {
   const user = users[req.body?.userId ?? 0];
   const dbUser = await getUser(user.id);
@@ -121,5 +158,69 @@ app.get("/cards/transactions", async (req, res) => {
 
   res.send({ success: true, data: transactions.data });
 });
+
+app.post(
+  "/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
+    console.log({ body: req.body, sig, sec: process.env.WEBHOOK_SECRET });
+    let event;
+
+    // Verify webhook signature and extract the event.
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.WEBHOOK_SECRET,
+      );
+    } catch (err) {
+      console.log({ err, message: err.message });
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "issuing_authorization.request") {
+      const auth = event.data.object;
+      await handleAuthorizationRequest(auth);
+    }
+
+    res.json({ received: true });
+  },
+);
+
+const handleAuthorizationRequest = async (auth) => {
+  // Authorize the transaction.
+  try {
+    const { card } = auth;
+    const { amount } = auth.pending_request;
+    const { category } = auth.merchant_data;
+
+    const trx = await getAggregatedTransactionsForMonth(card.id);
+
+    const catAmount = parseInt(trx.find((r) => r.category === category).amount);
+
+    const limit = await getLimitForCategory(card.id, category);
+
+    console.log({ limit, catAmount, trx });
+
+    // over limit!
+    if (limit < catAmount + amount) {
+      await pool.query(
+        "insert into transactions (card, category, amount, approved) values ($1, $2, $3, false)",
+        [card.id, category, amount],
+      );
+      return await stripe.issuing.authorizations.decline(auth["id"]);
+    }
+
+    await pool.query(
+      "insert into transactions (card, category, amount) values ($1, $2, $3)",
+      [card.id, category, amount],
+    );
+  } catch (error) {
+    console.error(error);
+  }
+  await stripe.issuing.authorizations.approve(auth["id"]);
+};
 
 app.listen(8000, () => console.log("🚀 listening on :8000"));

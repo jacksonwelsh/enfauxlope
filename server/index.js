@@ -1,5 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const db = require("./db");
+const { getUser, pool } = db;
 
 dotenv.config();
 
@@ -53,6 +55,38 @@ app.post("/link", async (req, res) => {
   } catch (error) {
     res.send({ error: error, message: error.message });
     // handle error
+  }
+});
+
+app.post("/link/exchange", async (req, res) => {
+  const user = users[req.body?.userId ?? 0];
+  try {
+    const exchangeResponse = await client.itemPublicTokenExchange({
+      public_token: req.body?.public_token,
+    });
+    // commit response to db
+    const dbUser = getUser(user.id);
+    console.log({ dbUser });
+
+    if (!dbUser)
+      pool.query(
+        "INSERT INTO users (id, name, token, item_id) VALUES ($1, $2, $3, $4)",
+        [
+          user.id,
+          user.name,
+          exchangeResponse.data.access_token,
+          exchangeResponse.data.item_id,
+        ],
+      );
+    else
+      pool.query("UPDATE users SET token = $1, item_id = $2 WHERE id = $3", [
+        exchangeResponse.data.access_token,
+        exchangeResponse.data.item_id,
+        dbUser.id,
+      ]);
+    res.send({ success: true, itemId: exchangeResponse.data.item_id });
+  } catch (error) {
+    res.send({ error: error, message: error.message });
   }
 });
 

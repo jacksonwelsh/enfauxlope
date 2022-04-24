@@ -25,9 +25,11 @@ const getTransactionsForMonth = async (id, category) => {
 
 const getAggregatedTransactionsForMonth = async (id, category) => {
   const transactions = await pool.query(
-    `select category, sum(amount) as amount from transactions where card = $1 ${
-      category ? "and category = $2" : ""
-    } and created >= date_trunc('month', CURRENT_DATE) and approved group by category`,
+    `select internal, external, sum(amount) as amount from transactions a
+    inner join categories b on a.category = b.internal where card = $1 ${
+      category ? "and internal = $2" : ""
+    } and created >= date_trunc('month', CURRENT_DATE) and approved
+    group by internal, external`,
     category ? [id, category] : [id],
   );
 
@@ -39,8 +41,11 @@ const getLimitForCategory = async (id, category) => {
     "select category, amount from limits where card = $1 and category = $2",
     [id, category],
   );
-  return limit.rows[0]?.amount;
+  return limit.rows[0]?.amount ?? 999999;
 };
+
+const getCategories = () =>
+  pool.query("select * from categories").then((d) => d.rows);
 
 module.exports = {
   pool,
@@ -48,4 +53,5 @@ module.exports = {
   getTransactionsForMonth,
   getAggregatedTransactionsForMonth,
   getLimitForCategory,
+  getCategories,
 };

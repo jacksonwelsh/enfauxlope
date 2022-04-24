@@ -7,6 +7,7 @@ const {
   pool,
   getAggregatedTransactionsForMonth,
   getLimitForCategory,
+  getCategories,
 } = db;
 
 dotenv.config();
@@ -129,12 +130,10 @@ app.post("/cards/override/:id", async (req, res) => {
 
   if (!transaction) return res.status(400).send();
   if (transaction.approved)
-    return res
-      .status(400)
-      .send({
-        success: false,
-        message: `Transaction ${id} was already approved.`,
-      });
+    return res.status(400).send({
+      success: false,
+      message: `Transaction ${id} was already approved.`,
+    });
 
   const until = new Date(new Date().getTime() + 1000 * 60 * 60 * 6);
   await pool.query(
@@ -146,6 +145,21 @@ app.post("/cards/override/:id", async (req, res) => {
     success: true,
     until: until.toISOString(),
   });
+});
+
+app.get("/cards/categories", async (_, res) => {
+  const categories = await getCategories();
+  return res.send(categories);
+});
+
+app.get("/cards/transactions/aggregated", async (req, res) => {
+  const user = users[req.body?.userId ?? 0];
+  const cardId = await pool
+    .query("select card from cards where cardholder = $1", [user.id])
+    .then((r) => r.rows[0].card);
+
+  const categories = await getAggregatedTransactionsForMonth(cardId);
+  return res.send(categories);
 });
 
 app.get("/cards/transactions", async (req, res) => {
@@ -198,7 +212,11 @@ const handleAuthorizationRequest = async (auth) => {
 
     const trx = await getAggregatedTransactionsForMonth(card.id);
 
-    const catAmount = parseInt(trx.find((r) => r.category === category).amount);
+    console.log({ trx });
+
+    const catAmount = parseInt(
+      trx.find((r) => r.internal === category)?.amount ?? "0",
+    );
 
     const limit = await getLimitForCategory(card.id, category);
 

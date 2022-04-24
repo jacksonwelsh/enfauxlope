@@ -11,7 +11,7 @@ const CategoryGrid = ({ updateCard, setLimit }) => {
   }, [updateCard]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4 my-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4 my-4 pb-[20rem]">
       {transactions?.map((cat, idx) => (
         <CategoryCard
           internal={cat.internal}

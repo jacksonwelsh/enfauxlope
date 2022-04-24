@@ -40,17 +40,14 @@ const Home = () => {
   const triggerLimitSet = (category) => {
     setSelectedCategory(category);
     limitValue.current.focus();
-  }
+  };
 
   return (
-    <div
-      className="container mx-auto my-4 flex justify-center px-2 md:pr-6 md:mr-2"
-      style={{ width: "100vh-250px", float: "right" }}
-    >
-      <div>
+    <div className="z-10 container mx-auto my-4 flex justify-center px-2 md:pr-6 md:mr-2 overflow-scroll h-full">
+      <div className="h-full pb-24">
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
         <CategoryGrid updateCard={updateCard} setLimit={triggerLimitSet} />
-        <div className="bg-gradient-to-t from-gray-900/50 to-transparent backdrop-blur absolute bottom-0 w-full -ml-8 grid grid-cols-3 p-4">
+        <div className="bg-gradient-to-t from-gray-900/50 to-transparent backdrop-blur absolute bottom-0 w-full -ml-8 grid grid-cols-3 p-4 h-32">
           <ComboBox
             selectedCategory={selectedCategory}
             setSelectedCategory={(e) => {

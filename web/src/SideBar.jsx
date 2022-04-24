@@ -24,9 +24,9 @@ const SideBar = () => {
 
         </div>
         <div className="pb-4 text-center">
-          <h2 className="font-bold text-2xl">Your Kudos:</h2>
+          <h2 className="font-bold text-xl">Your Current Kudos</h2>
 
-          <div className="flex flex-col items-center text-2xl pt-1">
+          <div className="flex flex-col text-2xl pt-1">
             EXP
             <div className="w-full mx-2 h-6 my-2 bg-gray-700">
                 <div className={`bg-blue-700 h-6`} style={{ width: `${bars[0].barWidth}%`}} />

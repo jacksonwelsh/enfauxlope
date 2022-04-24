@@ -12,16 +12,17 @@ const Home = () => {
   //React.useEffect(() => console.table({ limit }), [limit])
 
   const checkForm = () => {
+    console.log(selectedCategory.internal)
     if(limit === '' || selectedCategory === undefined){
       console.log("form bad")
     }
     else {
-      fetch(`${process.env.REACT_APP_API_ROOT}/cards/transactions/aggregated`, 
+      fetch(`${process.env.REACT_APP_API_ROOT}/cards/limits`, 
       {
         method: 'PUT',
         body: JSON.stringify({
-          selectedCategory,
-          limit
+          category: selectedCategory.internal,
+          limit: limit
         }),
         headers: {
           'Content-Type': 'application/json',

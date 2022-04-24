@@ -51,7 +51,7 @@ const ComboBox = ({selectedCategory, setSelectedCategory }) => {
 
   return (
     <Combobox as="div" value={selectedCategory} onChange={setSelectedCategory}>
-      <Combobox.Label className="block text-sm font-medium text-gray-700">Add new</Combobox.Label>
+      <Combobox.Label className="block text-sm font-medium text-gray-700">Spending Category</Combobox.Label>
       <div className="relative mt-1">
         <Combobox.Input
           className="w-full rounded-md border border-gray-700 bg-gray-800 py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"

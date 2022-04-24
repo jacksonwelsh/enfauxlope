@@ -15,7 +15,7 @@ import { useState } from 'react'
 const CatCreateButton = ({ limit, selectedCategory, onClick }) => {
     return(
         <button class="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" onClick={onClick}>
-            Button
+            Add Limit
         </button>
     )
     

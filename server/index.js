@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const db = require("./db");
+var cors = require("cors");
 const {
   getUser,
   pool,
@@ -13,6 +14,7 @@ const {
 dotenv.config();
 
 const app = express();
+app.use(cors());
 
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_TOKEN);
@@ -170,30 +172,30 @@ app.get("/cards/transactions", async (req, res) => {
     cardholder: dbUser.cardholder_id,
   });
 
-  reduceArr = []
+  reduceArr = [];
 
-  for(let item in transactions){
-      if(item === "data"){
-          for(let transaction in transactions[item]){
-              category = transactions[item][transaction].merchant_data.category
-              name = transactions[item][transaction].merchant_data.name
-              amount = ((transactions[item][transaction].amount * -1))
-              date = transactions[item][transaction].created
-              city = transactions[item][transaction].merchant_data.city
-              state = transactions[item][transaction].merchant_data.state
-      
-              reduceArr.push({
-                category,
-                name,
-                amount,
-                date,
-                city,
-                state
-              })
-          }
+  for (let item in transactions) {
+    if (item === "data") {
+      for (let transaction in transactions[item]) {
+        category = transactions[item][transaction].merchant_data.category;
+        name = transactions[item][transaction].merchant_data.name;
+        amount = transactions[item][transaction].amount * -1;
+        date = transactions[item][transaction].created;
+        city = transactions[item][transaction].merchant_data.city;
+        state = transactions[item][transaction].merchant_data.state;
+
+        reduceArr.push({
+          category,
+          name,
+          amount,
+          date,
+          city,
+          state,
+        });
       }
+    }
   }
-  
+
   res.send({ success: true, data: reduceArr });
 });
 

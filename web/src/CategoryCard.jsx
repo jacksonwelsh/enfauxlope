@@ -5,15 +5,19 @@ const CategoryCard = ({ name, limit, amount }) => {
   let color = "bg-blue-600";
   if (barWidth >= 100) color = "bg-red-600";
   return (
-    <div className="w-full h-full bg-gray-800 font-mono px-4 py-2">
-      <h4 className="font-bold">{name}</h4>
+    <div className="w-full h-full bg-gray-800 font-mono px-4 py-2 flex flex-wrap content-between">
+      <h4 className="font-bold text-lg">{name}</h4>
       <p>
-        You've spent ${(amount / 100).toFixed(2)} of your $
-        {(limit / 100).toFixed(2)} limit this month.
+        You've spent ${(amount / 100).toFixed(2)}{" "}
+        {limit && <>of your ${(limit / 100).toFixed(2)} limit </>}this month.
       </p>
-      <div className="w-auto mx-2 h-2 my-2 bg-gray-700">
-        <div className={`${color} h-2`} style={{ width: `${barWidth}%` }} />
-      </div>
+      {limit ? (
+        <div className="w-full mx-2 h-2 my-2 bg-gray-700">
+          <div className={`${color} h-2`} style={{ width: `${barWidth}%` }} />
+        </div>
+      ) : (
+        <button className="w-full py-0.5 mt-2 bg-indigo-700">Set a limit</button>
+      )}
     </div>
   );
 };

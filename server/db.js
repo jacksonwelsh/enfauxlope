@@ -25,11 +25,14 @@ const getTransactionsForMonth = async (id, category) => {
 
 const getAggregatedTransactionsForMonth = async (id, category) => {
   const transactions = await pool.query(
-    `select internal, external, sum(amount) as amount from transactions a
-    inner join categories b on a.category = b.internal where card = $1 ${
-      category ? "and internal = $2" : ""
-    } and created >= date_trunc('month', CURRENT_DATE) and approved
-    group by internal, external`,
+    `select internal, external, sum(a.amount) as amount, l.amount as limit
+    from transactions a
+      inner join categories b on a.category = b.internal
+      left join limits l on a.category = l.category
+    where a.card = $1 ${category ? "and internal = $2" : ""}
+      and created >= date_trunc('month', CURRENT_DATE)
+      and approved
+    group by internal, external, l.amount`,
     category ? [id, category] : [id],
   );
 

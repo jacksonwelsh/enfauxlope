@@ -16,7 +16,7 @@ const CategoryGrid = () => {
           <CategoryCard
             name={cat.external}
             amount={cat.amount}
-            limit={Math.random() * 10000}
+            limit={cat.limit}
             key={idx}
           />
         ))}

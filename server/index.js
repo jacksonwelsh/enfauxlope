@@ -194,7 +194,7 @@ app.get("/cards/transactions/category/:cat", async (req, res) => {
     .then((res) => res.rows[0]);
 
   const transactions = await getTransactionsInCategory(cardId, cat).then((r) =>
-    r.map((t) => ({ ...t, created: Date.parse(t.created) / 1000 })),
+    r.map((t) => ({ ...t, created: Date.parse(t.created) })),
   );
   res.send({ transactions, intname: names.internal, extname: names.external });
 });

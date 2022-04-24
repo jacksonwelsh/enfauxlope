@@ -18,16 +18,16 @@ const CategoryCard = ({ internal, name, limit, amount }) => {
   return (
     <Link to={`/categories/${internal}`}>
       <div
-        className="w-full h-full bg-gray-800 font-mono px-4 py-2 hover:cursor-pointer rounded-md"
+        className="w-full h-full bg-gray-800 font-mono px-4 py-2 hover:cursor-pointer flex flex-wrap"
         onClick={() => handleClick()}
       >
-        <h4 className="font-bold">{name}</h4>
-        <p>
+        <h4 className="font-bold w-full">{name}</h4>
+        <p className="w-full my-1">
           You've spent ${(amount / 100).toFixed(2)}{" "}
           {limit && <>of your ${(limit / 100).toFixed(2)} limit </>}this month.
         </p>
         {limit ? (
-          <div className="w-auto mx-2 h-2 my-2 bg-gray-700">
+          <div className="w-full mx-2 h-2 my-2 bg-gray-700">
             <div className={`${color} h-2`} style={{ width: `${barWidth}%` }} />
           </div>
         ) : (

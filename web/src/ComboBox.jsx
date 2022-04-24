@@ -35,6 +35,15 @@ const ComboBox = () => {
 
   React.useEffect(() => console.log(selectedCategory), [selectedCategory])
 
+  // React.useEffect(() => {export const getSelectedCategory = () => { return selectedCategory; }}
+
+  // function getSelectedCategory = () => {return selectedCategory} 
+
+  // React.useEffect(() => {return selectedCategory})
+
+  // export const getSelectedCategory = () => {return selectedCategory; }
+
+
   const filteredCats =
     query === undefined
       ? categories
@@ -94,4 +103,6 @@ const ComboBox = () => {
   )
 }
 
+// export const viewDetials = () => {}
+// export default function({infinite}) {}
 export default ComboBox;

@@ -2,6 +2,8 @@ import React from "react";
 import CategoryGrid from "./CategoryGrid";
 import ComboBox from "./ComboBox";
 import MoneyBox from "./MoneyBox";
+import CatCreateButton from "./CatCreateButton";
+
 
 const Home = () => {
   return (
@@ -11,6 +13,7 @@ const Home = () => {
         <CategoryGrid />
         <ComboBox />
         <MoneyBox />
+        <CatCreateButton />
       </div>
     </>
   );

@@ -321,7 +321,7 @@ app.get("/account/balance", async (_req, res) => {
 
   return await stripe.balance.retrieve(function(err, balance) {
     // asynchronously called
-    res.send(balance.issuing.available);
+    res.send({accountBalance: balance.issuing.available[0].amount});
   });
 });
 

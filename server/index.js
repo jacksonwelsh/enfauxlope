@@ -181,17 +181,17 @@ app.get("/cards/transactions", async (req, res) => {
     cardholder: dbUser.cardholder_id,
   });
 
-  reduceArr = [];
+  const reduceArr = [];
 
   for (let item in transactions) {
     if (item === "data") {
       for (let transaction in transactions[item]) {
-        category = transactions[item][transaction].merchant_data.category;
-        name = transactions[item][transaction].merchant_data.name;
-        amount = transactions[item][transaction].amount * -1;
-        date = transactions[item][transaction].created;
-        city = transactions[item][transaction].merchant_data.city;
-        state = transactions[item][transaction].merchant_data.state;
+        const category = transactions[item][transaction].merchant_data.category;
+        const name = transactions[item][transaction].merchant_data.name;
+        const amount = (transactions[item][transaction].amount * -1)/100;
+        const date = transactions[item][transaction].created;
+        const city = transactions[item][transaction].merchant_data.city;
+        const state = transactions[item][transaction].merchant_data.state;
 
         reduceArr.push({
           category,

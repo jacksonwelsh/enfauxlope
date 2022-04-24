@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import CardDetails from "./CardDetails";
 import CreateLimit from "./CreateLimit";
 import Home from "./Home";
 import Transactions from "./Transactions";
@@ -13,13 +14,19 @@ const App = () => {
         >
           Enfauxlope
         </Link>
-        <Link to="/create" className="text-gray-300 text-sm hover:underline">
-          Create a new limit
-        </Link>
+        <div className="grid grid-flow-col grid-rows-1 gap-6">
+          <Link to="/card" className="text-gray-300 text-sm hover:underline">
+            About your card
+          </Link>
+          <Link to="/create" className="text-gray-300 text-sm hover:underline">
+            Create a new limit
+          </Link>
+        </div>
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/create" element={<CreateLimit />} />
+        <Route path="/card" element={<CardDetails />} />
         <Route path="/categories/:category" element={<Transactions />} />
       </Routes>
     </Router>

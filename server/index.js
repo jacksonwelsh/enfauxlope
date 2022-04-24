@@ -274,6 +274,23 @@ app.get("/cards/transactions/:id", async (req, res) => {
   res.send({ success: true, data: reduceArr });
 });
 
+app.get("/cards/details", async (req, res) => {
+  const user = users[req.body?.userId ?? 0];
+  const cardId = await getCardIdForUser(user.id);
+  const card = await stripe.issuing.cards.retrieve(cardId, {
+    expand: ["number", "cvc"],
+  });
+  res.send({
+    number: card.number,
+    cvc: card.cvc,
+    billingAddress: card.cardholder.billing.address,
+    cardholder: card.cardholder.name,
+    expMonth: card.exp_month,
+    expYear: card.exp_year,
+    active: card.active,
+  });
+});
+
 app.post("/webhook", async (req, res) => {
   const sig = req.headers["stripe-signature"];
 

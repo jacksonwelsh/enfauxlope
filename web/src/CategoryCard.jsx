@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 const CategoryCard = ({ internal, name, limit, amount }) => {
   const barWidth = Math.min(100, Math.round((100 * amount) / limit));
   let color = "bg-blue-600";
-  if (barWidth >= 100) color = "bg-red-600";
+  if (barWidth >= 50) color = "bg-white";
+  if (barWidth >= 70) color = "bg-yellow-500";
+  if (barWidth >= 80) color = "bg-orange-500";
+  if (barWidth >= 90) color = "bg-red-600";
 
   const handleClick = () => {
     // Simple GET request using fetch

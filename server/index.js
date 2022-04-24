@@ -236,7 +236,7 @@ app.get("/cards/transactions", async (req, res) => {
   res.send({ success: true, data: reduceArr });
 });
 
-app.post("/cards/limits", async (req, res) => {
+app.put("/cards/limits", async (req, res) => {
   // create a new limit
   const { category, limit } = req.body;
   const user = users[req.body?.userId ?? 0];

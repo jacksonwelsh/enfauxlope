@@ -34,8 +34,8 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto my-4" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '0px 100px'}}>
-      <div className="title">
+    <div className="container mx-auto my-4 flex justify-center px-2" style={{width: "100vh-250px", float: "right"}}>  
+      <div>
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
         <CategoryGrid />
         <ComboBox selectedCategory={selectedCategory} setSelectedCategory={(e) => setSelectedCategory(e)}/>

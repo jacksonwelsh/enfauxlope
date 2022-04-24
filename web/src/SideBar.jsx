@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 
 const barLevel = () => {
   const barWidth = Math.min(100, Math.random() * 100);
@@ -18,17 +17,18 @@ const SideBar = () => {
     bars.push(barLevel());
   }
 
-  // let params = useParams();
+  const [transactions, setTransactions] = React.useState(undefined);
 
-  // const [transactions, setTransactions] = React.useState(undefined);
+  React.useEffect(() => {
+    fetch(
+      `${process.env.REACT_APP_API_ROOT}/cards/transactions/`
+    )
+      .then((r) => r.json())
+      .then((t) => setTransactions(t.data.slice(0,5)));
+  }, []);
 
-  // React.useEffect(() => {
-  //   fetch(
-  //     `${process.env.REACT_APP_API_ROOT}/cards/transactions/`
-  //   )
-  //     .then((r) => r.json())
-  //     .then((t) => setCategoryName(t));
-  // }, [params.category]);
+  transactions?.map((t) => {return console.log({merchant: t.name, amount: t.amount.toFixed(2)});});
+
 
   return (
     <div className="bg-gradient-to-r from-gray-900/50 to-transparent backdrop-blur z-10 hidden md:block md:w-64 lg:w-80 mr-6 h-screen p-4">
@@ -36,11 +36,18 @@ const SideBar = () => {
         <div>
           <h2 className="font-bold text-xl">Welcome back, Johnny. Here are your most recent transactions</h2>
           <br />
-          <div className="grid grid-cols-2">
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
+          <div className="grid grid-cols-2 gap-2">
+          <div>Merchant</div>
+          <div>Amount</div>
+          {transactions?.map((t) => {
+            return (
+              <>
+                <div>{t.name}</div>
+                <div>${t.amount.toFixed(2)}</div>
+              </>
+            );
+          })}
+
           </div>
 
         </div>

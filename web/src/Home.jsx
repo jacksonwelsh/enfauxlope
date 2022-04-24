@@ -31,9 +31,6 @@ const Home = () => {
         setFormLocked(true);
         setUpdateCard((c) => !c);
       });
-
-      console.log("GOODODODOD");
-      //make card
     }
   };
 

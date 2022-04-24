@@ -33,7 +33,7 @@ const getAggregatedTransactionsForMonth = async (id, category) => {
     where a.card = $1 ${category ? "and internal = $2" : ""}
       and created >= date_trunc('month', CURRENT_DATE)
       and approved
-    group by internal, external, l.amount`,
+    group by internal, external, l.amount order by external`,
       category ? [id, category] : [id],
     )
     .then((r) => r.rows);

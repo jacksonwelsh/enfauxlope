@@ -20,10 +20,9 @@ const Transactions = () => {
       <br />
       <h2 className="text-2xl font-black">
         Total spent:{" $"}
-        {Object.values(category?.transactions ?? {}).reduce(
-          (prev, curr) => (prev += curr.amount / 100),
-          0
-        )}
+        {Object.values(category?.transactions ?? {})
+          .reduce((prev, curr) => (prev += curr.amount / 100), 0)
+          .toFixed(2)}
       </h2>
 
       <div className="mt-8 flex flex-col">

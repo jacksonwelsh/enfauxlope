@@ -241,7 +241,7 @@ app.put("/cards/limits", async (req, res) => {
   const user = users[req.body?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
 
-  if (limit === -1) {
+  if (limit < 0) {
     await pool.query("delete from limits where card = $1 and category = $2", [
       cardId,
       category,

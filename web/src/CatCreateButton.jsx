@@ -11,16 +11,28 @@ import React from "react";
 //     // }
 // }
 
-const CatCreateButton = ({ locked, onClick }) => {
+const CatCreateButton = ({ locked, onClick, neg }) => {
   return (
     <button
       className={`${
-        locked ? "bg-blue-200 cursor-not-allowed text-gray-900" : "bg-blue-600"
+        locked
+          ? neg
+            ? "bg-red-200 cursor-not-allowed text-gray-900"
+            : "bg-blue-200 cursor-not-allowed text-gray-900"
+          : neg
+          ? "bg-red-600"
+          : "bg-blue-600"
       } h-10 font-mono text-center w-max my-auto hover:bg-blue-dark text-white font-bold py-2 px-4`}
       onClick={onClick}
       disabled={locked}
     >
-      {locked ? "Limit Added" : "Add Limit"}
+      {locked
+        ? neg
+          ? "Limit Removed"
+          : "Limit Added"
+        : neg
+        ? "Remove Limit"
+        : "Add Limit"}
     </button>
   );
 };

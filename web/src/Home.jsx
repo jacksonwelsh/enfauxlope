@@ -64,6 +64,7 @@ const Home = () => {
             locked={formLocked}
             limit={limit}
             selectedCategory={selectedCategory}
+            neg={parseInt(limit) < 0}
             onClick={() => checkForm()}
           />
         </div>

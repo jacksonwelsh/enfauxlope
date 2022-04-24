@@ -24,7 +24,7 @@ const CategoryCard = ({ internal, name, limit, amount }) => {
           {limit && <>of your ${(limit / 100).toFixed(2)} limit </>}this month.
         </p>
         {limit ? (
-          <div className="w-full mx-2 h-2 my-2 bg-gray-700">
+          <div className="w-auto mx-2 h-2 my-2 bg-gray-700">
             <div className={`${color} h-2`} style={{ width: `${barWidth}%` }} />
           </div>
         ) : (

@@ -15,7 +15,7 @@ const Transactions = () => {
   }, [params.category]);
 
   return (
-    <div className="container mx-auto my-4">
+    <div className="container mx-auto my-4 px-2 md:mr-6 md:pr-2">
       <h1 className="text-6xl font-black">{category?.extname} Transactions</h1>
       <br />
       <h2 className="text-2xl font-black">

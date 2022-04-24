@@ -21,7 +21,7 @@ const CategoryCard = ({ internal, name, limit, amount, setLimit }) => {
         className="w-full h-full bg-gray-800 font-mono px-4 py-2 hover:cursor-pointer flex flex-wrap"
         onClick={() => handleClick()}
       >
-        <h4 className="font-bold w-full">{name}</h4>
+        <h4 className="font-bold w-full text-lg">{name}</h4>
         <p className="w-full my-1">
           You've spent ${(amount / 100).toFixed(2)}{" "}
           {limit && <>of your ${(limit / 100).toFixed(2)} limit </>}this month.

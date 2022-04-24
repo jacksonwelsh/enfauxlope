@@ -16,23 +16,23 @@ const App = () => {
           Enfauxlope
         </Link>
         <div className="grid grid-flow-col grid-rows-1 gap-6">
-          <Link to="/card" className="text-gray-300 text-sm hover:underline hover:text-white">
+          <Link
+            to="/card"
+            className="text-gray-300 text-sm hover:underline hover:text-white"
+          >
             About your card
-          </Link>
-          <Link to="/create" className="text-gray-300 text-sm hover:underline hover:text-white">
-            Create a new limit
           </Link>
         </div>
       </div>
-      <div className="z-10 flex overflow-hidden h-screen">        
-      <SideBar />      
+      <div className="z-10 flex overflow-hidden h-screen">
+        <SideBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreateLimit />} />
           <Route path="/card" element={<CardDetails />} />
           <Route path="/categories/:category" element={<Transactions />} />
         </Routes>
-      </div>      
+      </div>
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>

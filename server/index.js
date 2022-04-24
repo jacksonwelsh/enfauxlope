@@ -253,6 +253,24 @@ app.put("/cards/limits", async (req, res) => {
   res.send(result);
 });
 
+app.get("/cards/transactions/declined", async (req, res) => {
+  const user = users[req.body?.userId ?? 0];
+  const cardId = await getCardIdForUser(user.id);
+
+  const declined = await pool
+    .query(
+      `select t.*, external from transactions t inner join categories c on t.category = c.internal
+        where card = $1 
+          and not approved 
+          and override_until is null 
+          and created >= now() - interval '6 hours'`,
+      [cardId],
+    )
+    .then((r) => r.rows);
+
+  res.send(declined);
+});
+
 app.get("/cards/transactions/:id", async (req, res) => {
   const transaction_id = req.params.id;
 

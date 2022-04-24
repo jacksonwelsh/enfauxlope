@@ -24,7 +24,7 @@ const SideBar = () => {
 
         </div>
         <div className="pb-4 text-center">
-          <h2 className="font-bold text-2xl">Your Stats:</h2>
+          <h2 className="font-bold text-2xl">Your Kudos:</h2>
 
           <div className="flex flex-col items-center text-2xl pt-1">
             EXP

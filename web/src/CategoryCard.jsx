@@ -15,7 +15,7 @@ const CategoryCard = ({ internal, name, limit, amount }) => {
   return (
     <Link to={`/categories/${internal}`}>
       <div
-        className="w-full h-full bg-gray-800 font-mono px-4 py-2 hover:cursor-pointer"
+        className="w-full h-full bg-gray-800 font-mono px-4 py-2 hover:cursor-pointer rounded-md"
         onClick={() => handleClick()}
       >
         <h4 className="font-bold">{name}</h4>

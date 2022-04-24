@@ -158,6 +158,13 @@ app.get("/cards/categories", async (_, res) => {
   return res.send(categories);
 });
 
+
+// app.get("/cards/categories/:category", async (_, res) => {
+//   const {  } = req.params;
+//   const categories = await getCategories();
+//   return res.send(categories);
+// });
+
 app.get("/cards/transactions/aggregated", async (req, res) => {
   const user = users[req.body?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
@@ -170,9 +177,10 @@ app.get("/cards/transactions/category/:cat", async (req, res) => {
   const { cat } = req.params;
   const user = users[req.body?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
+  const names = await pool.query('select internal, external from categories where internal = $1', [cat]).then(res => res.rows[0]);
 
   const transactions = await getTransactionsInCategory(cardId, cat);
-  res.send(transactions);
+  res.send({transactions, intname: names.internal, extname: names.external});
 });
 
 app.get("/cards/transactions", async (req, res) => {

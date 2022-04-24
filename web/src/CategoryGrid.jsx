@@ -20,6 +20,7 @@ const CategoryGrid = () => {
       <CreateLimitModal />
       {transactions?.map((cat, idx) => (
         <CategoryCard
+          internal={cat.internal}
           name={cat.external}
           amount={cat.amount}
           limit={cat.limit}

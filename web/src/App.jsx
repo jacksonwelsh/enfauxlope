@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import CardDetails from "./CardDetails";
 import CreateLimit from "./CreateLimit";
 import Home from "./Home";
+import SideBar from "./SideBar";
 import Transactions from "./Transactions";
 
 const App = () => {
@@ -23,14 +24,15 @@ const App = () => {
           </Link>
         </div>
       </div>
-      <div className="z-10">
+      <div className="z-10 flex">        
+      <SideBar />      
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreateLimit />} />
           <Route path="/card" element={<CardDetails />} />
           <Route path="/categories/:category" element={<Transactions />} />
         </Routes>
-      </div>
+      </div>      
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>

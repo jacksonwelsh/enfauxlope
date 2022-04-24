@@ -337,6 +337,14 @@ const handleAuthorizationRequest = async (auth) => {
 
     // over limit!
     if (limit < catAmount + amount) {
+      // check if we have already tried this transaction and have overrridden it
+      const previousTx = await pool
+        .query(
+          "select * from transactions where merchant_name = $1 and category = $2 and amount = $3 and override_until >= now()",
+        )
+        .then((r) => r.rowCount);
+      if (previousTx > 0)
+        return await stripe.issuing.authorizations.approve(auth["id"]);
       await pool.query(
         "insert into transactions (card, category, amount, approved, merchant_name, city, state) values ($1, $2, $3, false, $4, $5, $6)",
         [card.id, category, amount, name, city, state],

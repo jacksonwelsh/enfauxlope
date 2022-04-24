@@ -18,60 +18,37 @@ const SideBar = () => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-gray-900/50 backdrop-blur z-10 hidden md:block md:w-64 lg:w-80 mr-6 h-screen p-4">
-      <h2 className="font-bold text-4xl">Your Activity</h2>
+    <div className="bg-gradient-to-r from-gray-900/50 to-transparent backdrop-blur z-10 hidden md:block md:w-64 lg:w-80 mr-6 h-screen p-4">
+      <div className="flex flex-col h-full justify-between">
+        <div>
 
-      <div
-        className="flex flex-col items-center text-2xl"
-        style={{ paddingTop: "20px" }}
-      >
-        Rewards
-        <div className="w-full mx-2 h-2 my-2 bg-gray-700">
-          <div
-            className={`${bars[0].color} h-2`}
-            style={{ width: `${bars[0].barWidth}%` }}
-          />
+        </div>
+        <div className="pb-4 text-center">
+          <h2 className="font-bold text-xl">Your Current Kudos</h2>
+
+          <div className="flex flex-col items-center text-2xl pt-1">
+            EXP
+            <div className="w-full mx-2 h-6 my-2 bg-gray-700">
+                <div className={`bg-blue-700 h-6`} style={{ width: `${bars[0].barWidth}%`}} />
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center text-2xl pt-1">
+            Percent Saved Goal
+            <div className="w-full mx-2 h-6 my-2 bg-gray-700">
+                <div className={`bg-green-700 h-6`} style={{ width: `${bars[1].barWidth}%` }} />
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center text-2xl pt-1">
+            Wellness Karma
+            <div className="w-full mx-2 h-6 my-2 bg-gray-700">
+                <div className={`bg-yellow-400 h-6`} style={{ width: `${bars[2].barWidth}%` }} />
+            </div>
+          </div>
         </div>
       </div>
-
-      <div
-        className="flex flex-col items-center text-2xl"
-        style={{ paddingTop: "20px" }}
-      >
-        EXP
-        <div className="w-full mx-2 h-2 my-2 bg-gray-700">
-          <div
-            className={`${bars[1].color} h-2`}
-            style={{ width: `${bars[1].barWidth}%` }}
-          />
-        </div>
-      </div>
-
-      <div
-        className="flex flex-col items-center text-2xl"
-        style={{ paddingTop: "20px" }}
-      >
-        Money
-        <div className="w-full mx-2 h-2 my-2 bg-gray-700">
-          <div
-            className={`${bars[2].color} h-2`}
-            style={{ width: `${bars[2].barWidth}%` }}
-          />
-        </div>
-      </div>
-
-      <div
-        className="flex flex-col items-center text-2xl"
-        style={{ paddingTop: "20px" }}
-      >
-        Social Karma
-        <div className="w-full mx-2 h-2 my-2 bg-gray-700">
-          <div
-            className={`${bars[3].color} h-2`}
-            style={{ width: `${bars[3].barWidth}%` }}
-          />
-        </div>
-      </div>
+      
     </div>
   );
 };

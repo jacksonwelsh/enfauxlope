@@ -8,6 +8,7 @@ const Home = () => {
   const [limit, setLimit] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState(undefined);
   const [formLocked, setFormLocked] = React.useState(false);
+  const [updateCard, setUpdateCard] = React.useState(false);
 
   //React.useEffect(() => console.table({ limit }), [limit])
 
@@ -25,7 +26,10 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
         },
-      }).then(() => setFormLocked(true));
+      }).then(() => {
+        setFormLocked(true);
+        setUpdateCard((c) => !c);
+      });
 
       console.log("GOODODODOD");
       //make card
@@ -39,7 +43,7 @@ const Home = () => {
     >
       <div>
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
-        <CategoryGrid />
+        <CategoryGrid updateCard />
         <div className="bg-gradient-to-t from-gray-900/50 to-transparent backdrop-blur absolute bottom-0 w-full -ml-8 grid grid-cols-3 p-4">
           <ComboBox
             selectedCategory={selectedCategory}

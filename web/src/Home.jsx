@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CategoryGrid from "./CategoryGrid";
 import ComboBox from "./ComboBox";
 import MoneyBox from "./MoneyBox";

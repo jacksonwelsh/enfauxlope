@@ -1,7 +1,7 @@
 import React from "react";
 import CategoryCard from "./CategoryCard";
 
-const CategoryGrid = (updateCard) => {
+const CategoryGrid = ({ updateCard, setLimit }) => {
   const [transactions, setTransactions] = React.useState(undefined);
 
   React.useEffect(() => {
@@ -19,6 +19,7 @@ const CategoryGrid = (updateCard) => {
           amount={cat.amount}
           limit={cat.limit}
           key={idx}
+          setLimit={setLimit}
         />
       ))}
     </div>

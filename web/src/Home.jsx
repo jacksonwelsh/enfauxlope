@@ -9,6 +9,7 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = React.useState(undefined);
   const [formLocked, setFormLocked] = React.useState(false);
   const [updateCard, setUpdateCard] = React.useState(false);
+  const limitValue = React.useRef(undefined);
 
   //React.useEffect(() => console.table({ limit }), [limit])
 
@@ -36,6 +37,11 @@ const Home = () => {
     }
   };
 
+  const triggerLimitSet = (category) => {
+    setSelectedCategory(category);
+    limitValue.current.focus();
+  }
+
   return (
     <div
       className="container mx-auto my-4 flex justify-center px-2 md:pr-6 md:mr-2"
@@ -43,7 +49,7 @@ const Home = () => {
     >
       <div>
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
-        <CategoryGrid updateCard />
+        <CategoryGrid updateCard setLimit={triggerLimitSet} />
         <div className="bg-gradient-to-t from-gray-900/50 to-transparent backdrop-blur absolute bottom-0 w-full -ml-8 grid grid-cols-3 p-4">
           <ComboBox
             selectedCategory={selectedCategory}
@@ -58,6 +64,7 @@ const Home = () => {
               setLimit(e.target.value);
               setFormLocked(false);
             }}
+            rf={limitValue}
           />
           <CatCreateButton
             locked={formLocked}

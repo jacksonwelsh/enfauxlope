@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const CategoryCard = ({ internal, name, limit, amount }) => {
+const CategoryCard = ({ internal, name, limit, amount, setLimit }) => {
   const barWidth = Math.min(100, Math.round((100 * amount) / limit));
   let color = "bg-blue-600";
   if (barWidth >= 50) color = "bg-white";
@@ -31,11 +31,17 @@ const CategoryCard = ({ internal, name, limit, amount }) => {
             <div className={`${color} h-2`} style={{ width: `${barWidth}%` }} />
           </div>
         ) : (
-          <Link to="/create" state={{ category: internal }} className="w-full ">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setLimit({ internal, external: name });
+            }}
+            className="w-full "
+          >
             <div className="w-full py-0.5 mt-2 bg-indigo-700 text-center">
               Set a limit
             </div>
-          </Link>
+          </button>
         )}
       </div>
     </Link>

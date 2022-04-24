@@ -1,6 +1,6 @@
 import React from "react";
 
-const MoneyBox = ({ value, setValue }) => {
+const MoneyBox = ({ value, setValue, rf }) => {
   return (
     <div className="my-2">
       <label
@@ -14,6 +14,7 @@ const MoneyBox = ({ value, setValue }) => {
           <span className="text-gray-500 sm:text-sm">$</span>
         </div>
         <input
+          ref={rf}
           value={value}
           onChange={setValue}
           type="text"

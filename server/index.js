@@ -11,12 +11,14 @@ const {
   getCategories,
   getTransactionsInCategory,
   getCardIdForUser,
+  createLimit,
 } = db;
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_TOKEN);
@@ -188,7 +190,7 @@ app.get("/cards/transactions", async (req, res) => {
       for (let transaction in transactions[item]) {
         const category = transactions[item][transaction].merchant_data.category;
         const name = transactions[item][transaction].merchant_data.name;
-        const amount = (transactions[item][transaction].amount * -1)/100;
+        const amount = (transactions[item][transaction].amount * -1) / 100;
         const date = transactions[item][transaction].created;
         const city = transactions[item][transaction].merchant_data.city;
         const state = transactions[item][transaction].merchant_data.state;
@@ -206,6 +208,15 @@ app.get("/cards/transactions", async (req, res) => {
   }
 
   res.send({ success: true, data: reduceArr });
+});
+
+app.post("/cards/limits", async (req, res) => {
+  // create a new limit
+  const { category, limit } = req.body;
+  const user = users[req.body?.userId ?? 0];
+  const cardId = await getCardIdForUser(user.id);
+  const result = await createLimit(cardId, category, limit);
+  res.send(result);
 });
 
 app.post(

@@ -24,8 +24,9 @@ const getTransactionsForMonth = async (id, category) => {
 };
 
 const getAggregatedTransactionsForMonth = async (id, category) => {
-  const transactions = await pool.query(
-    `select internal, external, sum(a.amount) as amount, l.amount as limit
+  const transactions = await pool
+    .query(
+      `select internal, external, sum(a.amount) as amount, l.amount as limit
     from transactions a
       inner join categories b on a.category = b.internal
       left join limits l on a.category = l.category
@@ -33,10 +34,35 @@ const getAggregatedTransactionsForMonth = async (id, category) => {
       and created >= date_trunc('month', CURRENT_DATE)
       and approved
     group by internal, external, l.amount`,
-    category ? [id, category] : [id],
-  );
+      category ? [id, category] : [id],
+    )
+    .then((r) => r.rows);
 
-  return transactions.rows;
+  const limits = await pool
+    .query(
+      `select internal, external, amount as limit
+    from limits l
+      inner join categories c on l.category = c.internal
+    where l.card = $1
+    group by internal, external, amount`,
+      [id],
+    )
+    .then((r) => r.rows);
+
+  limits
+    .filter(
+      (l) => transactions.findIndex((t) => t.internal === l.internal) === -1,
+    )
+    .forEach((limit) => {
+      transactions.push({
+        internal: limit.internal,
+        external: limit.external,
+        amount: null,
+        limit: limit.limit,
+      });
+    });
+
+  return transactions;
 };
 
 const getLimitForCategory = async (id, category) => {
@@ -63,6 +89,30 @@ const getCardIdForUser = (userId) =>
 const getCategories = () =>
   pool.query("select * from categories").then((d) => d.rows);
 
+const createLimit = async (cardId, category, amount) => {
+  const foundLimit = await pool
+    .query("select * from limits where card = $1 and category = $2", [
+      cardId,
+      category,
+    ])
+    .then((r) => r.rows);
+  if (foundLimit.length > 0) {
+    return await pool
+      .query(
+        "update limits set amount = $1 where id = $2 returning id, card, category, amount",
+        [amount, foundLimit[0].id],
+      )
+      .then((r) => r.rows[0]);
+  } else {
+    return await pool
+      .query(
+        "insert into limits (card, category, amount) values ($1, $2, $3) returning id, card, category, amount",
+        [cardId, category, amount],
+      )
+      .then((r) => r.rows(0));
+  }
+};
+
 module.exports = {
   pool,
   getUser,
@@ -72,4 +122,5 @@ module.exports = {
   getCategories,
   getTransactionsInCategory,
   getCardIdForUser,
+  createLimit,
 };

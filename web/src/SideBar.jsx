@@ -20,36 +20,44 @@ const SideBar = () => {
   const [transactions, setTransactions] = React.useState(undefined);
 
   React.useEffect(() => {
-    fetch(
-      `${process.env.REACT_APP_API_ROOT}/cards/transactions/`
-    )
+    fetch(`${process.env.REACT_APP_API_ROOT}/cards/transactions/`)
       .then((r) => r.json())
-      .then((t) => setTransactions(t.data.slice(0,5)));
+      .then((t) => setTransactions(t.data.slice(0, 5)));
   }, []);
 
-  transactions?.map((t) => {return console.log({merchant: t.name, amount: t.amount.toFixed(2)});});
 
+  const [balance, setBalance] = React.useState(undefined);
+
+  React.useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_ROOT}/account/balance/`)
+      .then((r) => r.json())
+      .then((t) => setBalance(t.accountBalance));
+  }, []);
 
   return (
     <div className="bg-gradient-to-r from-gray-900/50 to-transparent backdrop-blur z-10 hidden md:block md:w-64 lg:w-80 mr-6 h-screen p-4">
       <div className="flex flex-col h-full justify-between">
         <div>
-          <h2 className="font-bold text-xl text-center">Welcome back, Johnny. Here are your most recent transactions:</h2>
+          <h2 className="font-bold text-xl text-center">
+            Welcome back, Johnny. Here are your most recent transactions:
+          </h2>
           <br />
           <div className="grid grid-cols-2 gap-2 items-center text-center">
-          <div className="font-bold underline">Merchant</div>
-          <div className="font-bold underline">Amount</div>
-          {transactions?.map((t) => {
-            return (
-              <>
-                <div>{t.name}</div>
-                <div>${t.amount.toFixed(2)}</div>
-              </>
-            );
-          })}
-
+            <div className="font-bold underline">Merchant</div>
+            <div className="font-bold underline">Amount</div>
+            {transactions?.map((t) => {
+              return (
+                <>
+                  <div>{t.name}</div>
+                  <div>${t.amount.toFixed(2)}</div>
+                </>
+              );
+            })}
           </div>
-
+        </div>
+        <div>
+          <h2 className="font-bold text-xl items-center">Account Balance: ${balance/100}</h2>
+            
         </div>
         <div className="pb-4 text-center">
           <h2 className="font-bold text-xl">Your Current Kudos</h2>

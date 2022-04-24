@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CategoryGrid from "./CategoryGrid";
 import ComboBox from "./ComboBox";
 import MoneyBox from "./MoneyBox";
@@ -6,14 +6,41 @@ import CatCreateButton from "./CatCreateButton";
 
 
 const Home = () => {
+  const [limit, setLimit] = React.useState('');
+  const [selectedCategory, setSelectedCategory] = React.useState(undefined)
+
+  //React.useEffect(() => console.table({ limit }), [limit])
+
+  const checkForm = () => {
+    if(limit === '' || selectedCategory === undefined){
+      console.log("form bad")
+    }
+    else {
+      fetch(`${process.env.REACT_APP_API_ROOT}/cards/transactions/aggregated`, 
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          selectedCategory,
+          limit
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }).then((console.log("success")));
+
+      console.log("GOODODODOD")
+      //make card
+    }
+  };
+
   return (
     <div className="container mx-auto my-4" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '0px 100px'}}>
       <div className="title">
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
         <CategoryGrid />
-        <ComboBox />
-        <MoneyBox />
-        <CatCreateButton />
+        <ComboBox selectedCategory={selectedCategory} setSelectedCategory={(e) => setSelectedCategory(e)}/>
+        <MoneyBox value={limit} setValue={(e) => setLimit(e.target.value)} />
+        <CatCreateButton limit={limit} selectedCategory={selectedCategory} onClick={() => checkForm()} />
       </div>
     </div>
   );

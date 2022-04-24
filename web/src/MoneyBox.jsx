@@ -1,10 +1,13 @@
 import React from "react";
-import { useState } from 'react'
+import { useState } from "react";
 
-const MoneyBox = () => {
+const MoneyBox = ({ value, setValue }) => {
   return (
     <div>
-      <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+      <label
+        htmlFor="price"
+        className="block text-sm font-medium text-gray-700"
+      >
         Price
       </label>
       <div className="mt-1 relative rounded-md shadow-sm">
@@ -12,6 +15,8 @@ const MoneyBox = () => {
           <span className="text-gray-500 sm:text-sm">$</span>
         </div>
         <input
+          value={value}
+          onChange={setValue}
           type="text"
           name="price"
           id="price"
@@ -26,7 +31,7 @@ const MoneyBox = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default MoneyBox;

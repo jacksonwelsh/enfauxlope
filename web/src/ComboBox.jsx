@@ -21,11 +21,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const ComboBox = () => {
-  
-  const [categories, setCategories] = useState(undefined)
+const ComboBox = ({selectedCategory, setSelectedCategory }) => {
+  const [categories, setCategories] = React.useState(undefined)
   const [query, setQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState(undefined)
 
   React.useEffect(() => {
     fetch(`${process.env.REACT_APP_API_ROOT}/cards/categories`)
@@ -33,7 +31,7 @@ const ComboBox = () => {
     .then((c) => setCategories(c))
   }, [])
 
-  React.useEffect(() => console.log(selectedCategory), [selectedCategory])
+  //React.useEffect(() => console.log(selectedCategory), [selectedCategory])
 
   // React.useEffect(() => {export const getSelectedCategory = () => { return selectedCategory; }}
 

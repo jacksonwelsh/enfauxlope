@@ -9,6 +9,8 @@ const {
   getAggregatedTransactionsForMonth,
   getLimitForCategory,
   getCategories,
+  getTransactionsInCategory,
+  getCardIdForUser,
 } = db;
 
 dotenv.config();
@@ -156,12 +158,19 @@ app.get("/cards/categories", async (_, res) => {
 
 app.get("/cards/transactions/aggregated", async (req, res) => {
   const user = users[req.body?.userId ?? 0];
-  const cardId = await pool
-    .query("select card from cards where cardholder = $1", [user.id])
-    .then((r) => r.rows[0].card);
+  const cardId = await getCardIdForUser(user.id);
 
   const categories = await getAggregatedTransactionsForMonth(cardId);
   return res.send(categories);
+});
+
+app.get("/cards/transactions/category/:cat", async (req, res) => {
+  const { cat } = req.params;
+  const user = users[req.body?.userId ?? 0];
+  const cardId = await getCardIdForUser(user.id);
+
+  const transactions = await getTransactionsInCategory(cardId, cat);
+  res.send(transactions);
 });
 
 app.get("/cards/transactions", async (req, res) => {

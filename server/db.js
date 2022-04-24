@@ -47,6 +47,19 @@ const getLimitForCategory = async (id, category) => {
   return limit.rows[0]?.amount ?? 999999;
 };
 
+const getTransactionsInCategory = (card, category) =>
+  pool
+    .query("select * from transactions where card = $1 and category = $2", [
+      card,
+      category,
+    ])
+    .then((r) => r.rows);
+
+const getCardIdForUser = (userId) =>
+  pool
+    .query("select card from cards where cardholder = $1", [userId])
+    .then((r) => r.rows[0].card);
+
 const getCategories = () =>
   pool.query("select * from categories").then((d) => d.rows);
 
@@ -57,4 +70,6 @@ module.exports = {
   getAggregatedTransactionsForMonth,
   getLimitForCategory,
   getCategories,
+  getTransactionsInCategory,
+  getCardIdForUser,
 };

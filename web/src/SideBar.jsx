@@ -34,11 +34,11 @@ const SideBar = () => {
     <div className="bg-gradient-to-r from-gray-900/50 to-transparent backdrop-blur z-10 hidden md:block md:w-64 lg:w-80 mr-6 h-screen p-4">
       <div className="flex flex-col h-full justify-between">
         <div>
-          <h2 className="font-bold text-xl">Welcome back, Johnny. Here are your most recent transactions</h2>
+          <h2 className="font-bold text-xl text-center">Welcome back, Johnny. Here are your most recent transactions:</h2>
           <br />
-          <div className="grid grid-cols-2 gap-2">
-          <div>Merchant</div>
-          <div>Amount</div>
+          <div className="grid grid-cols-2 gap-2 items-center text-center">
+          <div className="font-bold underline">Merchant</div>
+          <div className="font-bold underline">Amount</div>
           {transactions?.map((t) => {
             return (
               <>

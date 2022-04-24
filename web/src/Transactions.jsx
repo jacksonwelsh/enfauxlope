@@ -14,11 +14,7 @@ const Transactions = () => {
       .then((t) => setCategoryName(t));
   }, [params.category]);
 
-  
-
-
 console.log(category?.transactions.map((t) => t.amount));
-
 
   return (
     <>

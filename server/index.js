@@ -250,6 +250,34 @@ app.get("/cards/transactions/:id", async (req, res) => {
 
   const reduceArr = [];
 
+  const transaction = await stripe.issuing.transactions.retrieve(transaction_id);
+  const id = transaction.id;
+  const category = transaction.merchant_data.category;
+  const name = transaction.merchant_data.name;
+  const amount = (transaction.amount * -1)/100;
+  const date = transaction.created;
+  const city = transaction.merchant_data.city;
+  const state = transaction.merchant_data.state;
+
+  reduceArr.push({
+    id,
+    category,
+    name,
+    amount,
+    date,
+    city,
+    state,
+  });
+
+
+  res.send({ success: true, data: reduceArr });
+});
+
+app.get("/cards/transactions/:id", async (req, res) => {
+  const transaction_id = req.params.id;
+
+  const reduceArr = [];
+
   const transaction = await stripe.issuing.transactions.retrieve(
     transaction_id,
   );

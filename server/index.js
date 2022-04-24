@@ -212,6 +212,7 @@ app.get("/cards/transactions", async (req, res) => {
   for (let item in transactions) {
     if (item === "data") {
       for (let transaction in transactions[item]) {
+        const id = transactions[item][transaction].id;
         const category = transactions[item][transaction].merchant_data.category;
         const name = transactions[item][transaction].merchant_data.name;
         const amount = (transactions[item][transaction].amount * -1) / 100;
@@ -220,6 +221,7 @@ app.get("/cards/transactions", async (req, res) => {
         const state = transactions[item][transaction].merchant_data.state;
 
         reduceArr.push({
+          id,
           category,
           name,
           amount,
@@ -241,6 +243,35 @@ app.post("/cards/limits", async (req, res) => {
   const cardId = await getCardIdForUser(user.id);
   const result = await createLimit(cardId, category, limit);
   res.send(result);
+});
+
+app.get("/cards/transactions/:id", async (req, res) => {
+  const transaction_id = req.params.id;
+
+  const reduceArr = [];
+
+  const transaction = await stripe.issuing.transactions.retrieve(
+    transaction_id,
+  );
+  const id = transaction.id;
+  const category = transaction.merchant_data.category;
+  const name = transaction.merchant_data.name;
+  const amount = (transaction.amount * -1) / 100;
+  const date = transaction.created;
+  const city = transaction.merchant_data.city;
+  const state = transaction.merchant_data.state;
+
+  reduceArr.push({
+    id,
+    category,
+    name,
+    amount,
+    date,
+    city,
+    state,
+  });
+
+  res.send({ success: true, data: reduceArr });
 });
 
 app.post("/webhook", async (req, res) => {

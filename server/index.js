@@ -11,12 +11,25 @@ const {
   getCategories,
   getTransactionsInCategory,
   getCardIdForUser,
+  createLimit,
 } = db;
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
+
+const setupForStripeWebhooks = {
+  // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
+  verify: function (req, res, buf) {
+    var url = req.originalUrl;
+    if (url.startsWith("/webhook")) {
+      req.rawBody = buf.toString();
+    }
+  },
+};
+
+app.use(express.json(setupForStripeWebhooks));
 
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_TOKEN);
@@ -156,6 +169,12 @@ app.get("/cards/categories", async (_, res) => {
   return res.send(categories);
 });
 
+// app.get("/cards/categories/:category", async (_, res) => {
+//   const {  } = req.params;
+//   const categories = await getCategories();
+//   return res.send(categories);
+// });
+
 app.get("/cards/transactions/aggregated", async (req, res) => {
   const user = users[req.body?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
@@ -168,9 +187,16 @@ app.get("/cards/transactions/category/:cat", async (req, res) => {
   const { cat } = req.params;
   const user = users[req.body?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
+  const names = await pool
+    .query("select internal, external from categories where internal = $1", [
+      cat,
+    ])
+    .then((res) => res.rows[0]);
 
-  const transactions = await getTransactionsInCategory(cardId, cat);
-  res.send(transactions);
+  const transactions = await getTransactionsInCategory(cardId, cat).then((r) =>
+    r.map((t) => ({ ...t, created: Date.parse(t.created) })),
+  );
+  res.send({ transactions, intname: names.internal, extname: names.external });
 });
 
 app.get("/cards/transactions", async (req, res) => {
@@ -186,14 +212,16 @@ app.get("/cards/transactions", async (req, res) => {
   for (let item in transactions) {
     if (item === "data") {
       for (let transaction in transactions[item]) {
+        const id = transactions[item][transaction].id;
         const category = transactions[item][transaction].merchant_data.category;
         const name = transactions[item][transaction].merchant_data.name;
-        const amount = (transactions[item][transaction].amount * -1)/100;
+        const amount = (transactions[item][transaction].amount * -1) / 100;
         const date = transactions[item][transaction].created;
         const city = transactions[item][transaction].merchant_data.city;
         const state = transactions[item][transaction].merchant_data.state;
 
         reduceArr.push({
+          id,
           category,
           name,
           amount,
@@ -208,46 +236,97 @@ app.get("/cards/transactions", async (req, res) => {
   res.send({ success: true, data: reduceArr });
 });
 
-app.post(
-  "/webhook",
-  bodyParser.raw({ type: "application/json" }),
-  async (req, res) => {
-    const sig = req.headers["stripe-signature"];
+app.post("/cards/limits", async (req, res) => {
+  // create a new limit
+  const { category, limit } = req.body;
+  const user = users[req.body?.userId ?? 0];
+  const cardId = await getCardIdForUser(user.id);
+  const result = await createLimit(cardId, category, limit);
+  res.send(result);
+});
 
-    console.log({ body: req.body, sig, sec: process.env.WEBHOOK_SECRET });
-    let event;
+app.get("/cards/transactions/:id", async (req, res) => {
+  const transaction_id = req.params.id;
 
-    // Verify webhook signature and extract the event.
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.WEBHOOK_SECRET,
-      );
-    } catch (err) {
-      console.log({ err, message: err.message });
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
+  const reduceArr = [];
 
-    if (event.type === "issuing_authorization.request") {
-      const auth = event.data.object;
-      await handleAuthorizationRequest(auth);
-    }
+  const transaction = await stripe.issuing.transactions.retrieve(
+    transaction_id,
+  );
+  const id = transaction.id;
+  const category = transaction.merchant_data.category;
+  const name = transaction.merchant_data.name;
+  const amount = (transaction.amount * -1) / 100;
+  const date = transaction.created;
+  const city = transaction.merchant_data.city;
+  const state = transaction.merchant_data.state;
 
-    res.json({ received: true });
-  },
-);
+  reduceArr.push({
+    id,
+    category,
+    name,
+    amount,
+    date,
+    city,
+    state,
+  });
+
+  res.send({ success: true, data: reduceArr });
+});
+
+app.get("/cards/details", async (req, res) => {
+  const user = users[req.body?.userId ?? 0];
+  const cardId = await getCardIdForUser(user.id);
+  const card = await stripe.issuing.cards.retrieve(cardId, {
+    expand: ["number", "cvc"],
+  });
+  res.send({
+    number: card.number,
+    cvc: card.cvc,
+    billingAddress: card.cardholder.billing.address,
+    cardholder: card.cardholder.name,
+    expMonth: card.exp_month,
+    expYear: card.exp_year,
+    active: card.active,
+  });
+});
+
+app.post("/webhook", async (req, res) => {
+  const sig = req.headers["stripe-signature"];
+
+  console.log({ body: req.body, sig, sec: process.env.WEBHOOK_SECRET });
+  let event;
+
+  // Verify webhook signature and extract the event.
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      sig,
+      process.env.WEBHOOK_SECRET,
+    );
+  } catch (err) {
+    console.log({ err, message: err.message });
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === "issuing_authorization.request") {
+    const auth = event.data.object;
+    await handleAuthorizationRequest(auth);
+  }
+
+  res.json({ received: true });
+});
 
 const handleAuthorizationRequest = async (auth) => {
   // Authorize the transaction.
   try {
     const { card } = auth;
     const { amount } = auth.pending_request;
-    const { category } = auth.merchant_data;
+    const { category, name, city, state } = auth.merchant_data;
 
     const trx = await getAggregatedTransactionsForMonth(card.id);
 
-    console.log({ trx });
+    console.log({ auth });
 
     const catAmount = parseInt(
       trx.find((r) => r.internal === category)?.amount ?? "0",
@@ -260,15 +339,15 @@ const handleAuthorizationRequest = async (auth) => {
     // over limit!
     if (limit < catAmount + amount) {
       await pool.query(
-        "insert into transactions (card, category, amount, approved) values ($1, $2, $3, false)",
-        [card.id, category, amount],
+        "insert into transactions (card, category, amount, approved, merchant_name, city, state) values ($1, $2, $3, false, $4, $5, $6)",
+        [card.id, category, amount, name, city, state],
       );
       return await stripe.issuing.authorizations.decline(auth["id"]);
     }
 
     await pool.query(
-      "insert into transactions (card, category, amount) values ($1, $2, $3)",
-      [card.id, category, amount],
+      "insert into transactions (card, category, amount, merchant_name, city, state) values ($1, $2, $3, $4, $5, $6)",
+      [card.id, category, amount, name, city, state],
     );
   } catch (error) {
     console.error(error);

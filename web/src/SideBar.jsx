@@ -1,7 +1,7 @@
 import React from "react";
 
 const barLevel = () => {
-  const barWidth = Math.min(100, Math.random() * 100);
+  const barWidth = Math.min(100, Math.random() * 90 + 10);
   let color = "bg-blue-600";
   if (barWidth >= 50) color = "bg-white";
   if (barWidth >= 70) color = "bg-yellow-500";
@@ -61,33 +61,35 @@ const SideBar = () => {
         <div className="pb-4 text-center">
           <h2 className="font-bold text-xl">Your Current Kudos</h2>
 
-          <div className="flex flex-col items-center text-2xl pt-1">
-            EXP
+          <div className="flex flex-col items-center text-lg pt-1">
+            Experience Points
             <div className="w-full mx-2 h-6 my-2 bg-gray-700">
               <div
-                className={`bg-blue-700 h-6`}
+                className={`bg-blue-700 h-6 text-sm flex items-center justify-center`}
                 style={{ width: `${bars[0].barWidth}%` }}
-              />
+              >{bars[0].barWidth.toFixed(0)}%</div>
             </div>
           </div>
 
-          <div className="flex flex-col items-center text-2xl pt-1">
+          <div className="flex flex-col items-center text-lg pt-1">
             Percent Saved Goal
-            <div className="w-full mx-2 h-6 my-2 bg-gray-700">
+            <div className="w-full mx-2 h-6 my-2 bg-gray-700 text-sm">
               <div
-                className={`bg-green-700 h-6`}
+                className={`bg-green-700 h-6 text-sm flex items-center justify-center`}
                 style={{ width: `${bars[1].barWidth}%` }}
-              />
+                >{bars[1].barWidth.toFixed(0)}%
+                </div>
             </div>
           </div>
 
-          <div className="flex flex-col items-center text-2xl pt-1">
+          <div className="flex flex-col items-center text-lg pt-1">
             Wellness Karma
             <div className="w-full mx-2 h-6 my-2 bg-gray-700">
               <div
-                className={`bg-yellow-400 h-6`}
+                className={`bg-yellow-400 text-gray-900 h-6 text-sm flex items-center justify-center`}
                 style={{ width: `${bars[2].barWidth}%` }}
-              />
+                >{bars[2].barWidth.toFixed(0)}%
+                </div>
             </div>
           </div>
         </div>

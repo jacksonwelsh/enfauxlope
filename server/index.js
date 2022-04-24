@@ -317,6 +317,14 @@ app.get("/cards/details", async (req, res) => {
   });
 });
 
+app.get("/account/balance", async (_req, res) => {
+
+  return await stripe.balance.retrieve(function(err, balance) {
+    // asynchronously called
+    res.send(balance.issuing.available);
+  });
+});
+
 app.post("/webhook", async (req, res) => {
   const sig = req.headers["stripe-signature"];
 

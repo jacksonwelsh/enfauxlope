@@ -8,6 +8,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
+      <Routes>
+        <Route path="/categories/:category" element={<Home />} />
+      </Routes>
     </Router>
   );
 };

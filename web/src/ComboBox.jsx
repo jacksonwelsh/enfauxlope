@@ -13,45 +13,53 @@
   }
 */
 import React from "react";
-import { useState } from 'react'
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
-import { Combobox } from '@headlessui/react'
+import { useState } from "react";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { Combobox } from "@headlessui/react";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
-const ComboBox = ({selectedCategory, setSelectedCategory }) => {
-  const [categories, setCategories] = React.useState(undefined)
-  const [query, setQuery] = useState("")
+const ComboBox = ({ selectedCategory, setSelectedCategory }) => {
+  const [categories, setCategories] = React.useState(undefined);
+  const [query, setQuery] = useState("");
 
   React.useEffect(() => {
     fetch(`${process.env.REACT_APP_API_ROOT}/cards/categories`)
-    .then((r) => r.json())
-    .then((c) => setCategories(c))
-  }, [])
+      .then((r) => r.json())
+      .then((c) => setCategories(c));
+  }, []);
 
   //React.useEffect(() => console.log(selectedCategory), [selectedCategory])
 
   // React.useEffect(() => {export const getSelectedCategory = () => { return selectedCategory; }}
 
-  // function getSelectedCategory = () => {return selectedCategory} 
+  // function getSelectedCategory = () => {return selectedCategory}
 
   // React.useEffect(() => {return selectedCategory})
 
   // export const getSelectedCategory = () => {return selectedCategory; }
 
-
   const filteredCats =
     query === undefined
       ? categories
       : categories?.filter((category) => {
-          return category?.external.toLowerCase().includes(query?.toLowerCase())
-        })
+          return category?.external
+            .toLowerCase()
+            .includes(query?.toLowerCase());
+        });
 
   return (
-    <Combobox as="div" value={selectedCategory} onChange={setSelectedCategory}>
-      <Combobox.Label className="block text-sm font-medium text-gray-700">Spending Category</Combobox.Label>
+    <Combobox
+      as="div"
+      value={selectedCategory}
+      onChange={setSelectedCategory}
+      className="w-96 my-2"
+    >
+      <Combobox.Label className="block text-sm font-medium text-gray-400">
+        Spending Category
+      </Combobox.Label>
       <div className="relative mt-1">
         <Combobox.Input
           className="w-full rounded-md border border-gray-700 bg-gray-800 py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
@@ -63,7 +71,7 @@ const ComboBox = ({selectedCategory, setSelectedCategory }) => {
         </Combobox.Button>
 
         {filteredCats?.length > 0 && (
-          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <Combobox.Options className="absolute bottom-0 -translate-y-16 origin-bottom z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filteredCats?.map((category) => (
               <Combobox.Option
                 name={category?.external}
@@ -71,20 +79,27 @@ const ComboBox = ({selectedCategory, setSelectedCategory }) => {
                 value={category}
                 className={({ active }) =>
                   classNames(
-                    'relative cursor-default select-none py-2 pl-8 pr-4',
-                    active ? 'bg-indigo-600 text-white' : 'text-gray-200'
+                    "relative cursor-default select-none py-2 pl-8 pr-4",
+                    active ? "bg-indigo-600 text-white" : "text-gray-200"
                   )
                 }
               >
                 {({ active, selected }) => (
                   <>
-                    <span className={classNames('block truncate', selected && 'font-semibold')}>{category.external}</span>
+                    <span
+                      className={classNames(
+                        "block truncate",
+                        selected && "font-semibold"
+                      )}
+                    >
+                      {category.external}
+                    </span>
 
                     {selected && (
                       <span
                         className={classNames(
-                          'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                          active ? 'text-white' : 'text-indigo-600'
+                          "absolute inset-y-0 left-0 flex items-center pl-1.5",
+                          active ? "text-white" : "text-indigo-600"
                         )}
                       >
                         <CheckIcon className="h-5 w-5" aria-hidden="true" />
@@ -98,8 +113,8 @@ const ComboBox = ({selectedCategory, setSelectedCategory }) => {
         )}
       </div>
     </Combobox>
-  )
-}
+  );
+};
 
 // export const viewDetials = () => {}
 // export default function({infinite}) {}

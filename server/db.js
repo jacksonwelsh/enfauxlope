@@ -109,7 +109,7 @@ const createLimit = async (cardId, category, amount) => {
         "insert into limits (card, category, amount) values ($1, $2, $3) returning id, card, category, amount",
         [cardId, category, amount],
       )
-      .then((r) => r.rows(0));
+      .then((r) => r.rows[0]);
   }
 };
 

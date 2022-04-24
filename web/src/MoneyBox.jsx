@@ -2,14 +2,14 @@ import React from "react";
 
 const MoneyBox = ({ value, setValue }) => {
   return (
-    <div>
+    <div className="my-2">
       <label
         htmlFor="price"
-        className="block text-sm font-medium text-gray-700"
+        className="block text-sm font-medium text-gray-400"
       >
         Spending Limit
       </label>
-      <div className="mt-1 relative rounded-md shadow-sm">
+      <div className="mt-1 relative rounded-md shadow-sm w-96">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm">$</span>
         </div>

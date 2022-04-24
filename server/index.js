@@ -175,7 +175,7 @@ app.get("/cards/categories", async (_, res) => {
 // });
 
 app.get("/cards/transactions/aggregated", async (req, res) => {
-  const user = users[req.body?.userId ?? 0];
+  const user = users[req.params?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
 
   const categories = await getAggregatedTransactionsForMonth(cardId);
@@ -184,7 +184,7 @@ app.get("/cards/transactions/aggregated", async (req, res) => {
 
 app.get("/cards/transactions/category/:cat", async (req, res) => {
   const { cat } = req.params;
-  const user = users[req.body?.userId ?? 0];
+  const user = users[req.params?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
   const names = await pool
     .query("select internal, external from categories where internal = $1", [
@@ -199,7 +199,7 @@ app.get("/cards/transactions/category/:cat", async (req, res) => {
 });
 
 app.get("/cards/transactions", async (req, res) => {
-  const user = users[req.body?.userId ?? 0];
+  const user = users[req.params?.userId ?? 0];
   const dbUser = await getUser(user.id);
 
   const transactions = await stripe.issuing.transactions.list({
@@ -254,7 +254,7 @@ app.put("/cards/limits", async (req, res) => {
 });
 
 app.get("/cards/transactions/declined", async (req, res) => {
-  const user = users[req.body?.userId ?? 0];
+  const user = users[req.params?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
 
   const declined = await pool
@@ -301,7 +301,7 @@ app.get("/cards/transactions/:id", async (req, res) => {
 });
 
 app.get("/cards/details", async (req, res) => {
-  const user = users[req.body?.userId ?? 0];
+  const user = users[req.params?.userId ?? 0];
   const cardId = await getCardIdForUser(user.id);
   const card = await stripe.issuing.cards.retrieve(cardId, {
     expand: ["number", "cvc"],

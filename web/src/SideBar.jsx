@@ -56,8 +56,7 @@ const SideBar = () => {
           </div>
         </div>
         <div>
-          <h2 className="font-bold text-xl items-center">Account Balance: ${balance/100}</h2>
-            
+          <h2 className="font-bold text-xl items-center">Account Balance: ${balance/100}</h2>            
         </div>
         <div className="pb-4 text-center">
           <h2 className="font-bold text-xl">Your Current Kudos</h2>

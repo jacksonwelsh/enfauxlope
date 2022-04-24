@@ -1,5 +1,7 @@
 import React from "react";
 import CategoryGrid from "./CategoryGrid";
+import ComboBox from "./ComboBox";
+import MoneyBox from "./MoneyBox";
 
 const Home = () => {
   return (
@@ -7,6 +9,8 @@ const Home = () => {
       <div className="container mx-auto my-4">
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
         <CategoryGrid />
+        <ComboBox />
+        <MoneyBox />
       </div>
     </>
   );

@@ -1,12 +1,22 @@
 import React from "react";
 
 const CategoryCard = ({ name, limit, amount }) => {
+
+  
   const barWidth = Math.min(100, Math.round((100 * amount) / limit));
   let color = "bg-blue-600";
   if (barWidth >= 100) color = "bg-red-600";
+
+  const handleClick = () => {
+    // Simple GET request using fetch
+    fetch(`${process.env.REACT_APP_API_ROOT}/cards/transactions`)
+        .then(response => response.json())
+        .then(data => console.log(data));
+  }
+  
   return (
-    <div className="w-full h-full bg-gray-800 font-mono px-4 py-2 flex flex-wrap content-between">
-      <h4 className="font-bold text-lg">{name}</h4>
+    <div className="w-full h-full bg-gray-800 font-mono px-4 py-2 hover:cursor-pointer" onClick={() => handleClick()}>
+      <h4 className="font-bold">{name}</h4>
       <p>
         You've spent ${(amount / 100).toFixed(2)}{" "}
         {limit && <>of your ${(limit / 100).toFixed(2)} limit </>}this month.

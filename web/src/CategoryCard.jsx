@@ -24,9 +24,9 @@ const CategoryCard = ({ internal, name, limit, amount, setLimit }) => {
         <h4 className="font-bold w-full text-lg">{name}</h4>
         <p className="w-full my-1">
           You've spent ${(amount / 100).toFixed(2)}{" "}
-          {limit && <>of your ${(limit / 100).toFixed(2)} limit </>}this month.
+          {limit !== undefined && <>of your ${(limit / 100).toFixed(2)} limit </>}this month.
         </p>
-        {limit ? (
+        {limit !== undefined ? (
           <div className="w-full mx-2 h-2 my-2 bg-gray-700">
             <div className={`${color} h-2`} style={{ width: `${barWidth}%` }} />
           </div>

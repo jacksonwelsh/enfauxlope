@@ -40,7 +40,16 @@ const Home = () => {
   };
 
   return (
-    <div className="z-10 container mx-auto my-4 flex justify-center px-2 md:pr-6 md:mr-2 overflow-scroll h-full">
+    <div className="z-10 container mx-auto my-4 flex justify-center px-2 md:pr-6 md:mr-2 overflow-scroll h-full flex-wrap">
+      <div className="p-2 bg-red-600/75 font-mono w-full mt-1 mb-4 flex items-center justify-between">
+        <p>
+          We declined a transaction from <strong>Gaming, Inc.</strong> (Computer
+          Games) for <strong>$69.01</strong>
+        </p>
+        <button className="bg-gray-100 font-bold px-2 text-gray-900 py-1 float-right">
+          Override
+        </button>
+      </div>
       <div className="h-full pb-24">
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
         <CategoryGrid updateCard={updateCard} setLimit={triggerLimitSet} />

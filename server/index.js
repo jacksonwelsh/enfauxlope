@@ -350,6 +350,7 @@ const handleAuthorizationRequest = async (auth) => {
       const previousTx = await pool
         .query(
           "select * from transactions where merchant_name = $1 and category = $2 and amount = $3 and override_until >= now()",
+          [name, category, amount],
         )
         .then((r) => r.rowCount);
       if (previousTx > 0)

@@ -4,7 +4,7 @@ import "./App.css";
 
 const App = () => {
   return (
-    <Router>
+    <Router className="bg-gray-900 text-gray-50">
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>

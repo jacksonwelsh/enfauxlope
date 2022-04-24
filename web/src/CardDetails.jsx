@@ -10,7 +10,7 @@ const CardDetails = () => {
   }, []);
 
   return (
-    <div className="container mx-auto my-4 px-2 pr-6 mr-2">
+    <div className="container mx-auto my-4 px-2 md:pr-6 md:mr-2">
       <h1 className="text-6xl font-black my-4">About your card</h1>
       <p className="text-lg">
         Your Enfauxlope card can be used at any retailer that accepts Visa. You

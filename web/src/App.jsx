@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import CreateLimit from "./CreateLimit";
 import Home from "./Home";
 import Transactions from "./Transactions";
 
@@ -8,9 +9,9 @@ const App = () => {
       <div className="flex w-full h-8 px-4 py-1 font-mono bg-black justify-between items-center">
         <Link
           to="/"
-          className="font-bold tracking-wider bg-gradient-to-tr from-blue-400 to-purple-400 bg-clip-text text-transparent"
+          className="font-bold tracking-wider bg-gradient-to-tr from-blue-400 to-purple-400 bg-clip-text text-transparent uppercase"
         >
-          ENFAUXLOPE
+          Enfauxlope
         </Link>
         <Link to="/create" className="text-gray-300 text-sm hover:underline">
           Create a new limit
@@ -18,8 +19,7 @@ const App = () => {
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
-      </Routes>
-      <Routes>
+        <Route path="/create" element={<CreateLimit />} />
         <Route path="/categories/:category" element={<Transactions />} />
       </Routes>
     </Router>

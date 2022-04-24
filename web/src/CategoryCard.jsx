@@ -28,9 +28,11 @@ const CategoryCard = ({ internal, name, limit, amount }) => {
             <div className={`${color} h-2`} style={{ width: `${barWidth}%` }} />
           </div>
         ) : (
-          <button className="w-full py-0.5 mt-2 bg-indigo-700">
-            Set a limit
-          </button>
+          <Link to="/create" state={{ category: internal }} className="w-full ">
+            <div className="w-full py-0.5 mt-2 bg-indigo-700 text-center">
+              Set a limit
+            </div>
+          </Link>
         )}
       </div>
     </Link>

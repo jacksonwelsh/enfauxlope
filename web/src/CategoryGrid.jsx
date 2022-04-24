@@ -14,6 +14,7 @@ const CategoryGrid = () => {
     <div className="grid grid-cols-3 gap-4 my-4">
       {transactions?.map((cat, idx) => (
           <CategoryCard
+            internal={cat.internal}
             name={cat.external}
             amount={cat.amount}
             limit={cat.limit}

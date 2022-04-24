@@ -1,6 +1,6 @@
 import React from "react";
-
-const CategoryCard = ({ name, limit, amount }) => {
+import { Link } from 'react-router-dom'
+const CategoryCard = ({ internal, name, limit, amount }) => {
 
   
   const barWidth = Math.min(100, Math.round((100 * amount) / limit));
@@ -12,9 +12,12 @@ const CategoryCard = ({ name, limit, amount }) => {
     fetch(`${process.env.REACT_APP_API_ROOT}/cards/transactions`)
         .then(response => response.json())
         .then(data => console.log(data));
+        
   }
-  
+
+
   return (
+    <Link to={`/categories/${internal}`}>
     <div className="w-full h-full bg-gray-800 font-mono px-4 py-2 hover:cursor-pointer" onClick={() => handleClick()}>
       <h4 className="font-bold">{name}</h4>
       <p>
@@ -29,6 +32,7 @@ const CategoryCard = ({ name, limit, amount }) => {
         <button className="w-full py-0.5 mt-2 bg-indigo-700">Set a limit</button>
       )}
     </div>
+    </Link>
   );
 };
 

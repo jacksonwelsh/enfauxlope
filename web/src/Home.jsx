@@ -49,7 +49,7 @@ const Home = () => {
     >
       <div>
         <h1 className="text-6xl font-black">Welcome to Enfauxlope</h1>
-        <CategoryGrid updateCard setLimit={triggerLimitSet} />
+        <CategoryGrid updateCard={updateCard} setLimit={triggerLimitSet} />
         <div className="bg-gradient-to-t from-gray-900/50 to-transparent backdrop-blur absolute bottom-0 w-full -ml-8 grid grid-cols-3 p-4">
           <ComboBox
             selectedCategory={selectedCategory}
